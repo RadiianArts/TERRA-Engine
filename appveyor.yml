@@ -34,11 +34,8 @@ environment:
   ENGINE_PATH: '%APPVEYOR_BUILD_FOLDER%\Engine'
   TESTS_PATH: '%APPVEYOR_BUILD_FOLDER%\Tests'
   FPC_PATH: '%APPVEYOR_BUILD_FOLDER%\fpc'
-  COMPILER_PATH: '%FPC_PATH%\bin\i386-win32\'
+  COMPILER_PATH: '%APPVEYOR_BUILD_FOLDER%\fpc\bin\i386-win32'
 
-install:
-  - appveyor DownloadFile https://dl.dropboxusercontent.com/u/194502/dev/fpc-win32-2.6.4.7z
-  - 7z x fpc-win32-2.6.4.7z -o%FPC_PATH% -y
 
 build_script:
   - SET PATH=%PATH%;%COMPILER_PATH%

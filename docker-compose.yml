@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  terra-engine:
+    image: terra-engine
+    build: .
+    ports:
+      - 3000
