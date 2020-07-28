@@ -1,52 +1,27 @@
-# Reference: http://www.appveyor.com/docs/appveyor-yml
-# Notes:
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-
-#---------------------------------#
-#      general configuration      #
-#---------------------------------#
-
 version: 1.0.{build}
-
-branches:
-  only:
-    - master
-  except:
-    - old_master
-    - gh-pages
-
-#---------------------------------#
-#    environment configuration    #
-#---------------------------------#
-
-shallow_clone: true
-
-matrix:
-  fast_finish: true
-
-platform:
-  - x86
-
-configuration:
-  - Release
-
-environment:
-  ENGINE_PATH: '%APPVEYOR_BUILD_FOLDER%\Engine'
-  TESTS_PATH: '%APPVEYOR_BUILD_FOLDER%\Tests'
-  FPC_PATH: '%APPVEYOR_BUILD_FOLDER%\fpc'
-  COMPILER_PATH: '%APPVEYOR_BUILD_FOLDER%\fpc\bin\i386-win32'
-
-
+pull_requests:
+  do_not_increment_build_number: true
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+  disable_publish_octopus: true
 build_script:
-  - SET PATH=%PATH%;%COMPILER_PATH%
-  - copy Tests\TERRATest.dpr Build
-  - cd Build
-  - compile_tests.bat
-  - TERRATest.exe
+- sh: >-
+    #!/bin/bash
 
-#---------------------------------#
-#     deployment configuration    #
-#---------------------------------#
-
-deploy: off
-
+    fpc -Sew -Mdelphi -dUSE_CONSOLE  -Fi../Engine/Core -Fi../Engine/Utils -Fu../Engine/Core -Fu../Engine/Math -Fu../Engine/Utils -Fu../Engine/Core/FileIO -Fu../Engine/Graphics -Fu../Engine/Graphics/Renderer -Fu../Engine/Templates -Fu../Engine/Image -Fu../Engine/Physics -Fu../Engine/Image -Fu../Engine/Image/Formats -Fu../Engine/OS/Linux -Fu../Engine/UI -Fu../Engine/AI -Fu../Engine/Audio -Fu../Engine/Audio/Formats -Fu../Engine/Audio/Renderers -Fu../Engine/Network -Fu../Engine/Libs/Steamworks/headers -Fu../Engine/Network -Fu../Engine/Network/Protocols -Fu../Tests -o./TERRATest TERRATest.dpr
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: WfcZCvVCdr1wdnfS0ZijAgXz+gdlcjYLowRYRe+M7aQMD9ZKSvbnNnlo8/9+/PWH
+  prerelease: true
+notifications:
+- provider: Email
+  to:
+  - phantori@hotmail.com
+  subject: test
+  message: appveyor test
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
